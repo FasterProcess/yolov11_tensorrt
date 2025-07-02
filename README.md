@@ -40,6 +40,8 @@ img2_result = (imgs1[1], detect_boxs1[1])
 img3_result = (imgs2[0], detect_boxs2[0])
 
 detection.draw_detections(imgs1, detect_boxs1)                      # this function can draw bbox in imgs1. notice: it will modify imgs1 content in-place
+
+yolo.release()
 ```
 
 # Environment
