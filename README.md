@@ -11,40 +11,37 @@ This project provides the code based on python-TensorRT for YOLOv8 or YOLOv11 (t
 
 `notic:` if you run this code and find that it leans towards only `person` detection, don't worry. This is very likely because the main code has been handled, as I am very concerned about the `person` detected results. In fact, the code of YOLO is complete and it fully considers all detect-types, you can fine-tune the external code by yourself.
 
-# env
+# usage
 
-```bash
-# apt install nvidia-driver-535
+```python
+from yolo import YOLOv8_11Trt as YOLO
+import cv2
+yolo = YOLO(
+    "model/yolov11m_dynamic.engine",
+    confidence_thres=0.5,
+    iou_thres=0.5,
+    max_batch_size=1,
+)
 
-# install CUDA-12.4 + cuDNN 9.10.2
-## omitted how to install CUDA-12.4, here
-cat >> ~/.bashrc <<EOF
-export CUDA_HOME=/usr/local/cuda-12.4
-export PATH=$CUDA_HOME/bin:$PATH
-export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
-EOF
-# nvcc -V to check CUDA version
+img1=cv2.imread(f"test1.jpg")
+img2=cv2.imread(f"test2.jpg")
+task1 = np.stack([img1, img2])
+detection.detect_sync(task1)                                        # add task1 sync
 
-wget https://developer.download.nvidia.com/compute/cudnn/9.10.2/local_installers/cudnn-local-repo-ubuntu2204-9.10.2_1.0-1_amd64.deb
-dpkg -i cudnn-local-repo-ubuntu2204-9.10.2_1.0-1_amd64.deb
-cp /var/cudnn-local-repo-ubuntu2204-9.10.2/cudnn-*-keyring.gpg /usr/share/keyrings/
-apt-get update
-apt-get -y install cudnn-cuda-12
+img3=cv2.imread(f"test3.jpg")
+task2 = np.stack([img3])
+detection.detect_sync(task2)                                        # add task2 sync
 
-# install TensorRT
-###################################################### TensorRT Backend ##########################################################
-# CPP version need envs below
-# export TENSORRT_HOME=/usr/local/TensorRT/TensorRT-10.4.0.26
-# export LD_LIBRARY_PATH=$PATH:$TENSORRT_HOME/lib:$LD_LIBRARY_PATH
-# export LIBRARY_PATH=$PATH:$TENSORRT_HOME/lib:$LIBRARY_PATH
-# export C_INCLUDE_PATH=$C_INCLUDE_PATH:$TENSORRT_HOME/include
-# export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$TENSORRT_HOME/include
-###############################################################################################################################
-pip3 install tensorrt==10.4
+(imgs1, detect_boxs1) = detection.detect_sync_output(wait=True)     # get result for task1, block if computing
+img1_result = (imgs1[0], detect_boxs1[0])                           # imgs[i] is raw img, detect_boxs[i] is bbox
+img2_result = (imgs1[1], detect_boxs1[1])    
+
+(imgs2, detect_boxs2) = detection.detect_sync_output(wait=True)     # get result for task2
+img3_result = (imgs2[0], detect_boxs2[0])
+
+detection.draw_detections(imgs1, detect_boxs1)                      # this function can draw bbox in imgs1. notice: it will modify imgs1 content in-place
 ```
 
-# Addition
+# Environment
 
-* [YOLOv11 with ONNXRuntime](https://github.com/oneflyingfish/yolov11-onnxruntime)
-* [YOLOv11 with TensorRT](https://github.com/oneflyingfish/yolov11_tensorrt)
-* [DeepSort+YOLO11 with TensorRT](https://github.com/oneflyingfish/yolo_deepsort_tensorrt)
+refer to [how to build environment in ubuntu](env.md)
