@@ -46,8 +46,8 @@ yolo.release()
 
 # Environment
 
-> complete development environment refer to [how to build development environment in ubuntu](env.md)
+> complete development environment refer to [how to build development environment in ubuntu](env/env.md)
 
 ```
-pip3 install requirements.txt
+pip3 install env/requirements.txt
 ```
