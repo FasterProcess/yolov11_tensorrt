@@ -26,20 +26,20 @@ yolo = YOLO(
 img1=cv2.imread(f"test1.jpg")
 img2=cv2.imread(f"test2.jpg")
 task1 = np.stack([img1, img2])
-detection.detect_sync(task1)                                        # add task1 sync
+yolo.detect_sync(task1)                                        # add task1 sync
 
 img3=cv2.imread(f"test3.jpg")
 task2 = np.stack([img3])
-detection.detect_sync(task2)                                        # add task2 sync
+yolo.detect_sync(task2)                                        # add task2 sync
 
-(imgs1, detect_boxs1) = detection.detect_sync_output(wait=True)     # get result for task1, block if computing
+(imgs1, detect_boxs1) = yolo.detect_sync_output(wait=True)     # get result for task1, block if computing
 img1_result = (imgs1[0], detect_boxs1[0])                           # imgs[i] is raw img, detect_boxs[i] is bbox
 img2_result = (imgs1[1], detect_boxs1[1])    
 
-(imgs2, detect_boxs2) = detection.detect_sync_output(wait=True)     # get result for task2
+(imgs2, detect_boxs2) = yolo.detect_sync_output(wait=True)     # get result for task2
 img3_result = (imgs2[0], detect_boxs2[0])
 
-detection.draw_detections(imgs1, detect_boxs1)                      # this function can draw bbox in imgs1. notice: it will modify imgs1 content in-place
+yolo.draw_detections(imgs1, detect_boxs1)                      # this function can draw bbox in imgs1. notice: it will modify imgs1 content in-place
 
 yolo.release()
 ```
